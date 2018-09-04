@@ -245,10 +245,10 @@ namespace OEESystem
             while (GlobalVar.gl_AppAlive)
             {
                 myFunc.syncTimeFromServer();
-                BeginInvoke(new Action(() =>
-                {
-                    toolStripLabel_syncTime.Text = GlobalVar.gl_syncTime;//显示标准时间
-                }));
+                //this.BeginInvoke(new Action(() =>
+                //{
+                //   // toolStripLabel_syncTime.Text = GlobalVar.gl_syncTime;//显示标准时间
+                //}));
                 Thread.Sleep(1000);
             }
         }
@@ -400,7 +400,7 @@ namespace OEESystem
                     }
                     catch(System.Exception ex)
                     {
-                        myFunc.writeErrorLog("消息显示异常:"+ex.ToString());
+                       // myFunc.writeErrorLog("消息显示异常:"+ex.ToString());
                     }
                     break;
                 default:

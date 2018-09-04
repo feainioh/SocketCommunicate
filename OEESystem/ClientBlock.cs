@@ -137,7 +137,7 @@ namespace OEESystem
                 {
                     myFunc.writeErrorLog("服务端接收" + ClientSocket + "数据异常:" + ex.ToString());
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
         }
 
@@ -233,7 +233,7 @@ namespace OEESystem
         private void QueryMsg(string endPoint, string msg)
         {
             string msg_Cass = msg.Substring(msg.IndexOf('@') + 1, 2);//指令种类
-            switch (msg_Cass)
+            switch (msg_Cass.ToUpper())
             {
                 case "TH"://客户端握手
                     string strMsg = "S001TH00#";//回发数据
@@ -252,7 +252,7 @@ namespace OEESystem
                     break;
                 case "MG"://客户端发送测试信息
                     #region MG
-                    if (allowCom)
+                    //if (allowCom)
                     {
                         try
                         {
@@ -296,9 +296,9 @@ namespace OEESystem
                             string json_root = JsonConvert.SerializeObject(root1);//序列化数据
                             myFunc.writeCommLog("获取" + ClientSocket + "上传json格式数据:" + json_root);
                             strMsg = "";
-                            if (WriteToLocal(json_root))//将json写入到本地
+                            if (WriteToLocal(json_root, root1.id))//将json写入到本地
                                 strMsg = "S001MG201#";//回发数据
-                            else strMsg = "S001MG201#";
+                            else strMsg = "S001MG202#";
                             msg_Buf = System.Text.Encoding.UTF8.GetBytes(strMsg);
                             SendData(endPoint, msg_Buf);//发送给客户端
                             this.BeginInvoke(new Action(() =>
@@ -489,13 +489,13 @@ namespace OEESystem
         ///         json格式数据
         ///     </para>
         /// </param>
-        private bool WriteToLocal(string json_Str)
+        private bool WriteToLocal(string json_Str,string fileName)
         {
             try
             {
                 myFunc.writeCommLog("json数据写入本地详报");
                 string log_Dir = Application.StartupPath + @"\Update";
-                string file_Path = log_Dir + @"\" + this.ClientName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
+                string file_Path = log_Dir + @"\" + fileName + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
                 if (!Directory.Exists(log_Dir)) Directory.CreateDirectory(log_Dir);
                 FileStream fs = new FileStream(file_Path, FileMode.Append, FileAccess.Write, FileShare.Write);
                 StreamWriter sw = new StreamWriter(fs, Encoding.Default);

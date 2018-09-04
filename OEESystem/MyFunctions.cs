@@ -96,11 +96,16 @@ namespace OEESystem
         /// </param>
         private  void deleteLogFiles(string dir_Path)
         {
+            dir_Path= Application.StartupPath + @"\log";
             DirectoryInfo dir = new DirectoryInfo(dir_Path);
-            FileInfo[] files = dir.GetFiles("*.txt");
-            foreach (FileInfo file in files)
+            FileInfo[] files = dir.GetFiles(" *.txt",SearchOption.AllDirectories);
+            FileInfo[] csv = dir.GetFiles("*.csv",SearchOption.AllDirectories);
+            List<FileInfo> list = new List<FileInfo>();
+            list.AddRange(files.ToList());
+            list.AddRange(csv.ToList());
+            foreach (FileInfo file in list)
             {
-                if ((DateTime.Now.Subtract(file.LastWriteTime)).Days > 60)
+                if ((DateTime.Now.Subtract(file.LastWriteTime)).Days > 7)
                 {
                     file.Delete();
                 }
